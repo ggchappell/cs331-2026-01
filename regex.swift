@@ -11,7 +11,8 @@
 // * EDIT THE FOLLOWING LINE TO CHANGE THE REGEX USED *
 // ****************************************************
 let regex1 = #/[ab]c*d/#  // Our regular expression
-// Note. Above, the "#" characters are optional in Swift 6.
+// Above, the "#" characters are optional in Swift 6, if the
+// "enable-bare-slash-regex" option is on.
 
 print("Demonstration of Regexes in Swift")
 print("Type strings to attempt to match.")

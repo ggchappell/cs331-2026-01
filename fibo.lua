@@ -32,7 +32,7 @@ how_many_to_print = 20
 
 io.write("Fibonacci Numbers\n")
 for i = 0, how_many_to_print-1 do
-    io.write("F("..i..") = "..fibo(i).."\n")
+    io.write("F(", i, ") = ", fibo(i), "\n")
 end
 
 io.write("\n")

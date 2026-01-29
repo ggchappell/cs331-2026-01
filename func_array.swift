@@ -1,3 +1,4 @@
+#!/usr/bin/env swift
 // func_array.swift
 // Glenn G. Chappell
 // 2026-01-26
@@ -51,7 +52,7 @@ print("See the source code for details.")
 print()
 
 // Call one of the above functions, using an array look-up
-print("i = ", i)
+print("i = \(i)")
 print("Result of function call: ", terminator: "")
 funcs[i]()
 print()

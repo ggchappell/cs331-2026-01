@@ -1,3 +1,4 @@
+#!/usr/bin/env swift
 // closure.swift
 // Glenn G. Chappell
 // 2026-01-29
@@ -44,9 +45,9 @@ let times2 = multiply(2)
 let triple = multiply(3)
 let times7 = multiply(7)
 
-print("300 times 2 is ", times2(300), ".", separator: "")
-print("25 tripled is ", triple(25), ".", separator: "")
-print("10 times 7 is ", times7(10), ".", separator: "")
+print("300 times 2 is \(times2(300)).")
+print("25 tripled is \(triple(25)).")
+print("10 times 7 is \(times7(10)).")
 print()
 
 // Wait for user

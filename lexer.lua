@@ -1,8 +1,8 @@
--- lexer.lua  UNFINISHED
--- VERSION 2
+-- lexer.lua
+-- VERSION 3
 -- Glenn G. Chappell
 -- Started: 2026-02-03
--- Updated: 2026-02-04
+-- Updated: 2026-02-06
 --
 -- For CS 331 Spring 2026
 -- In-Class Lexer Module
@@ -13,6 +13,9 @@
 -- - v2:
 --   - Add state LETTER, with handler. Write skipToNextLexeme. Add
 --     comment on invariants.
+-- - v3
+--   - Finished (hopefully). Add states DIGIT, DIGDOT, DOT, PLUS, MINUS,
+--     STAR. Comment each state-handler function. Check for MAL lexeme.
 
 -- Usage:
 --
@@ -70,6 +73,7 @@ lexer.catnames = {
 -- isLetter
 -- Returns true if string c is a letter character, false otherwise.
 local function isLetter(c)
+    assert(type(c) == "string")
     if c:len() ~= 1 then
         return false
     elseif c >= "A" and c <= "Z" then
@@ -85,6 +89,7 @@ end
 -- isDigit
 -- Returns true if string c is a digit character, false otherwise.
 local function isDigit(c)
+    assert(type(c) == "string")
     if c:len() ~= 1 then
         return false
     elseif c >= "0" and c <= "9" then
@@ -98,6 +103,7 @@ end
 -- isWhitespace
 -- Returns true if string c is a whitespace character, false otherwise.
 local function isWhitespace(c)
+    assert(type(c) == "string")
     if c:len() ~= 1 then
         return false
     elseif c == " " or c == "\t" or c == "\n" or c == "\r"
@@ -113,6 +119,7 @@ end
 -- Returns true if string c is a printable ASCII character (codes 32 " "
 -- through 126 "~"), false otherwise.
 local function isPrintableASCII(c)
+    assert(type(c) == "string")
     if c:len() ~= 1 then
         return false
     elseif c >= " " and c <= "~" then
@@ -126,6 +133,7 @@ end
 -- isIllegal
 -- Returns true if string c is an illegal character, false otherwise.
 local function isIllegal(c)
+    assert(type(c) == "string")
     if c:len() ~= 1 then
         return false
     elseif isWhitespace(c) then
@@ -167,6 +175,12 @@ function lexer.lex(program)
     local DONE   = 0
     local START  = 1
     local LETTER = 2
+    local DIGIT  = 3
+    local DIGDOT = 4
+    local DOT    = 5
+    local PLUS   = 6
+    local MINUS  = 7
+    local STAR   = 8
 
     -- ***** Character-Related Utility Functions *****
 
@@ -243,9 +257,28 @@ function lexer.lex(program)
 
     -- State START: no character read yet.
     local function handle_START()
-        if isLetter(ch) or ch == "_" then
+        if isIllegal(ch) then
+            add1()
+            state = DONE
+            category = lexer.MAL
+        elseif isLetter(ch) or ch == "_" then
             add1()
             state = LETTER
+        elseif isDigit(ch) then
+            add1()
+            state = DIGIT
+        elseif ch == "." then
+            add1()
+            state = DOT
+        elseif ch == "+" then
+            add1()
+            state = PLUS
+        elseif ch == "-" then
+            add1()
+            state = MINUS
+        elseif ch == "*" or ch == "/" or ch == "=" then
+            add1()
+            state = STAR
         else
             add1()
             state = DONE
@@ -268,15 +301,117 @@ function lexer.lex(program)
         end
     end
 
+    -- State DIGIT: we are in a NUMLIT, and we have NOT seen a dot
+    -- (".").
+    local function handle_DIGIT()
+        if isDigit(ch) then
+            add1()
+        elseif ch == "." then
+            add1()
+            state = DIGDOT
+        else
+            state = DONE
+            category = lexer.NUMLIT
+        end
+    end
+
+    -- State DIGDOT: we are in a NUMLIT, and we have seen a dot (".").
+    local function handle_DIGDOT()
+        if isDigit(ch) then
+            add1()
+        else
+            state = DONE
+            category = lexer.NUMLIT
+        end
+    end
+
+    -- State DOT: we have seen a dot (".") and nothing else.
+    local function handle_DOT()
+        if isDigit(ch) then
+            add1()
+            state = DIGDOT
+        else
+            state = DONE
+            category = lexer.OP
+        end
+    end
+
+    -- State PLUS: we have seen a plus ("+") and nothing else.
+    local function handle_PLUS()
+        if ch == "+" or ch == "=" then
+            add1()
+            state = DONE
+            category = lexer.OP
+        elseif isDigit(ch) then
+            add1()
+            state = DIGIT
+        elseif ch == "." then
+            if isDigit(nextChar()) then  -- 2-char look-ahead
+                add1()  -- add dot to lexeme
+                state = DIGDOT
+            else        -- this lexeme is just "+"; do not add dot
+                state = DONE
+                category = lexer.OP
+            end
+        else
+            state = DONE
+            category = lexer.OP
+        end
+    end
+
+    -- State MINUS: we have seen a minus ("-") and nothing else.
+    local function handle_MINUS()
+        if ch == "-" or ch == "=" then
+            add1()
+            state = DONE
+            category = lexer.OP
+        elseif isDigit(ch) then
+            add1()
+            state = DIGIT
+        elseif ch == "." then
+            if isDigit(nextChar()) then  -- 2-char look-ahead
+                add1()  -- add dot to lexeme
+                state = DIGDOT
+            else        -- this lexeme is just "-"; do not add dot
+                state = DONE
+                category = lexer.OP
+            end
+        else
+            state = DONE
+            category = lexer.OP
+        end
+    end
+
+    -- State STAR: we have seen a star ("*"), slash ("/"), or equal
+    -- ("=") and nothing else.
+    local function handle_STAR()
+        if ch == "=" then
+            add1()
+            state = DONE
+            category = lexer.OP
+        else
+            state = DONE
+            category = lexer.OP
+        end
+    end
+
     -- ***** Table of State-Handler Functions *****
 
     handlers = {
         [DONE]=handle_DONE,
         [START]=handle_START,
         [LETTER]=handle_LETTER,
+        [DIGIT]=handle_DIGIT,
+        [DIGDOT]=handle_DIGDOT,
+        [DOT]=handle_DOT,
+        [PLUS]=handle_PLUS,
+        [MINUS]=handle_MINUS,
+        [STAR]=handle_STAR,
     }
 
     -- ***** Body of Function lex *****
+
+    assert(type(program) == "string")
 
     -- Make a coroutine, and return wrapper function as iterator
     return coroutine.wrap(function()

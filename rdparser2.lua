@@ -1,6 +1,8 @@
--- rdparser2.lua  UNFINISHED
+-- rdparser2.lua
 -- Glenn G. Chappell
--- 2026-02-10
+-- Based on rdparser1.lua
+-- Started: 2026-02-10
+-- Updated: 2026-02-11
 --
 -- For CS 331 Spring 2026
 -- Recursive-Descent Parser #2: More Complex
@@ -193,6 +195,11 @@ end
 -- Function init must be called before this function is called.
 function parse_args()
     if matchCat(lexer.NUMLIT) then
+        while matchString(",") or matchString(";") do
+            if not matchCat(lexer.NUMLIT) then
+                return false
+            end
+        end
         -- We would construct an AST here
         return true
     elseif matchString("*") then
@@ -201,6 +208,17 @@ function parse_args()
         end
         if not matchString("*") then
             return false
+        end
+        -- We would construct an AST here
+        return true
+    elseif matchCat(lexer.ID) then
+        if matchString("[") then
+            if not parse_item() then
+                return false
+            end
+            if not matchString("]") then
+                return false
+            end
         end
         -- We would construct an AST here
         return true

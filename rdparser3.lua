@@ -1,6 +1,7 @@
--- rdparser3.lua  UNFINISHED
+-- rdparser3.lua
 -- Glenn G. Chappell
--- 2026-02-12
+-- Started: 2026-02-12
+-- Updated: 2026-02-13
 --
 -- For CS 331 Spring 2026
 -- Recursive-Descent Parser #3: Expressions
@@ -149,6 +150,8 @@ end
 
 
 local parse_expr
+local parse_term
+local parse_factor
 
 
 -- *********************************************************************
@@ -197,7 +200,80 @@ end
 -- Parsing function for nonterminal "expr".
 -- Function init must be called before this function is called.
 function parse_expr()
-    return false, nil  -- DUMMY
+    local good, ast, saveop, newast
+
+    good, ast = parse_term()
+    if not good then
+        return false, nil
+    end
+
+    while matchString("+") or matchString("-") do
+        -- Invariant: ast is the AST for what has been parsed so far.
+        saveop = matched
+
+        good, newast = parse_term()
+        if not good then
+            return false, nil
+        end
+
+        ast = { { BIN_OP, saveop }, ast, newast }
+    end
+
+    return true, ast
+end
+
+
+-- parse_term
+-- Parsing function for nonterminal "term".
+-- Function init must be called before this function is called.
+function parse_term()
+    local good, ast, saveop, newast
+
+    good, ast = parse_factor()
+    if not good then
+        return false, nil
+    end
+
+    while matchString("*") or matchString("/") do
+        -- Invariant: ast is the AST for what has been parsed so far.
+        saveop = matched
+
+        good, newast = parse_factor()
+        if not good then
+            return false, nil
+        end
+
+        ast = { { BIN_OP, saveop }, ast, newast }
+    end
+
+    return true, ast
+end
+
+
+-- parse_factor
+-- Parsing function for nonterminal "factor".
+-- Function init must be called before this function is called.
+function parse_factor()
+    local good, ast
+
+    if matchCat(lexer.ID) then
+        return true, { SIMPLE_VAR, matched }
+    elseif matchCat(lexer.NUMLIT) then
+        return true, { NUMLIT_VAL, matched }
+    elseif matchString("(") then
+        good, ast = parse_expr()
+        if not good then
+            return false, nil
+        end
+
+        if not matchString(")") then
+            return false, nil
+        end
+
+        return true, ast
+    else
+        return false, nil
+    end
 end
 
 

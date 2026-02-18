@@ -14,7 +14,7 @@ parseit = require "parseit"  -- Import parseit module
 -- * YOU MAY WISH TO CHANGE THE FOLLOWING LINE *
 -- *********************************************
 
-EXIT_ON_FIRST_FAILURE = true
+EXIT_ON_FIRST_FAILURE = false
 -- If EXIT_ON_FIRST_FAILURE is true, then this program exits after the
 -- first failing test. If it is false, then this program executes all
 -- tests, reporting success/failure for each.
@@ -608,43 +608,6 @@ function test_print_stmt_no_expr(t)
 end
 
 
-function test_function_call_stmt(t)
-    io.write("Test Suite: Function call statements\n")
-
-    checkParse(t, "ff();", true, true,
-      {PROGRAMx,{FUNCxCALL,"ff"}},
-      "Function call statement #1")
-    checkParse(t, "fffffffffffffffffffffffffffffffff();", true, true,
-      {PROGRAMx,{FUNCxCALL,"fffffffffffffffffffffffffffffffff"}},
-      "Function call statement #2")
-    checkParse(t, "ff();gg();", true, true,
-      {PROGRAMx,{FUNCxCALL,"ff"},{FUNCxCALL,"gg"}},
-      "Two function call statements")
-    checkParse(t, "ff()", false, true, nil,
-      "Bad function call statement: no semicolon")
-    checkParse(t, "ff);", false, false, nil,
-      "Bad function call statement: no left paren")
-    checkParse(t, "ff(;", false, false, nil,
-      "Bad function call statement: no right paren")
-    checkParse(t, "ff(();", false, false, nil,
-      "Bad function call statement: extra left paren")
-    checkParse(t, "ff());", false, false, nil,
-      "Bad function call statement: extra right paren")
-    checkParse(t, "ff()();", false, false, nil,
-      "Bad function call statement: extra pair of parens")
-    checkParse(t, "ff gg();", false, false, nil,
-      "Bad function call statement: extra name")
-    checkParse(t, "(ff)();", true, false, nil,
-      "Bad function call statement: parentheses around name")
-    checkParse(t, "ff(a);", false, false, nil,
-      "Bad function call statement: argument - Identfier arg")
-    checkParse(t, "ff(\"abc\");", false, false, nil,
-      "Bad function call statement: argument - StringLiteral arg")
-    checkParse(t, "ff(2);", false, false, nil,
-      "Bad function call statement: argument - NumericLiteral arg")
-end
-
-
 function test_func_def_no_expr(t)
     io.write("Test Suite: function definitions - no expressions\n")
 
@@ -691,6 +654,44 @@ function test_func_def_no_expr(t)
         "v",{PROGRAMx,{PRINTxSTMT}}}}}}}},
       "Function definition: nested function definitions")
 end
+
+
+function test_function_call_stmt(t)
+    io.write("Test Suite: Function call statements\n")
+
+    checkParse(t, "ff();", true, true,
+      {PROGRAMx,{FUNCxCALL,"ff"}},
+      "Function call statement #1")
+    checkParse(t, "fffffffffffffffffffffffffffffffff();", true, true,
+      {PROGRAMx,{FUNCxCALL,"fffffffffffffffffffffffffffffffff"}},
+      "Function call statement #2")
+    checkParse(t, "ff();gg();", true, true,
+      {PROGRAMx,{FUNCxCALL,"ff"},{FUNCxCALL,"gg"}},
+      "Two function call statements")
+    checkParse(t, "ff()", false, true, nil,
+      "Bad function call statement: no semicolon")
+    checkParse(t, "ff);", false, false, nil,
+      "Bad function call statement: no left paren")
+    checkParse(t, "ff(;", false, false, nil,
+      "Bad function call statement: no right paren")
+    checkParse(t, "ff(();", false, false, nil,
+      "Bad function call statement: extra left paren")
+    checkParse(t, "ff());", false, false, nil,
+      "Bad function call statement: extra right paren")
+    checkParse(t, "ff()();", false, false, nil,
+      "Bad function call statement: extra pair of parens")
+    checkParse(t, "ff gg();", false, false, nil,
+      "Bad function call statement: extra name")
+    checkParse(t, "(ff)();", true, false, nil,
+      "Bad function call statement: parentheses around name")
+    checkParse(t, "ff(a);", false, false, nil,
+      "Bad function call statement: argument - Identfier arg")
+    checkParse(t, "ff(\"abc\");", false, false, nil,
+      "Bad function call statement: argument - StringLiteral arg")
+    checkParse(t, "ff(2);", false, false, nil,
+      "Bad function call statement: argument - NumericLiteral arg")
+end
+
 
 function test_while_loop_simple_expr(t)
     io.write("Test Suite: while loops - simple expressions only\n")
@@ -2238,8 +2239,8 @@ function test_parseit(t)
     io.write("TEST SUITES FOR MODULE parseit\n")
     test_simple(t)
     test_print_stmt_no_expr(t)
-    test_function_call_stmt(t)
     test_func_def_no_expr(t)
+    test_function_call_stmt(t)
     test_while_loop_simple_expr(t)
     test_if_stmt_simple_expr(t)
     test_assn_stmt(t)

@@ -229,7 +229,7 @@ end
 -- Parsing function for nonterminal "statement".
 -- Function init must be called before this function is called.
 function parse_statement()
-    local stmtkind, good, ast1, ast2, ast3, saveid
+    local stmtkind, good, ast1, ast2
 
     if matchString(";") then
         return true, { EMPTY_STMT }
@@ -303,7 +303,7 @@ function parse_statement()
         -- TODO: WRITE THIS!!!
         return false, nil  -- DUMMY
 
-    else
+    else  -- PROBABLY NEED MORE elseifs HERE
         -- TODO: WRITE THIS!!!
         return false, nil  -- DUMMY
 

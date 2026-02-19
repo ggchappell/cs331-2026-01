@@ -1,6 +1,7 @@
--- parseit.lua  UNFINISHED
+-- parseit.lua  SKELETON
 -- Glenn G. Chappell
--- 2026-02-17
+-- Started: 2026-02-17
+-- Updated: 2026-02-18
 --
 -- For CS 331 Spring 2026
 -- Solution to Assignment 4, Exercise A
@@ -229,7 +230,7 @@ end
 -- Parsing function for nonterminal "statement".
 -- Function init must be called before this function is called.
 function parse_statement()
-    local stmtkind, good, ast1, ast2
+    local stmtkind, good, ast1, ast2, saveid
 
     if matchString(";") then
         return true, { EMPTY_STMT }
@@ -300,8 +301,33 @@ function parse_statement()
         return false, nil  -- DUMMY
 
     elseif matchString("func") then
-        -- TODO: WRITE THIS!!!
-        return false, nil  -- DUMMY
+        if not matchCat(lexit.ID) then
+            return false, nil
+        end
+        saveid = matched
+
+        if not matchString("(") then
+            return false, nil
+        end
+
+        if not matchString(")") then
+            return false, nil
+        end
+
+        if not matchString("{") then
+            return false, nil
+        end
+
+        good, ast1 = parse_program()
+        if not good then
+            return false, nil
+        end
+
+        if not matchString("}") then
+            return false, nil
+        end
+
+        return true, { FUNC_DEF, saveid, ast1 }
 
     else  -- PROBABLY NEED MORE elseifs HERE
         -- TODO: WRITE THIS!!!

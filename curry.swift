@@ -45,7 +45,6 @@ print("See the source code for details.")
 print()
 
 let times2 = multiply(2)
-
 print("2 times 300 is \(times2(300)).")
 print()
 

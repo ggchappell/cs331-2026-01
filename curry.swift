@@ -1,7 +1,8 @@
 #!/usr/bin/env swift
-// curry.swift  UNFINISHED
+// curry.swift
 // Glenn G. Chappell
-// 2026-02-22
+// Started: 2026-02-22
+// Updated: 2026-02-23
 //
 // For CS 331 Spring 2026
 // Currying in Swift
@@ -44,11 +45,14 @@ print("Demonstration of Currying in Swift")
 print("See the source code for details.")
 print()
 
+print("Without currying:")
 let times2 = multiply(2)
 print("2 times 300 is \(times2(300)).")
 print()
 
-// TO DO: WRITE SOMETHING HERE!!!
+print("Currying:")
+print("2 times 300 is \(multiply(2)(300)).")
+print()
 
 // Wait for user
 print("Press ENTER to quit ", terminator: "")

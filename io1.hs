@@ -102,7 +102,7 @@ printSec' = io1 >> io2 >> io3
 getPrint   = getLine >>= putStrLn
 getPrint'  = getLine >>= (\ line -> putStrLn line)
 
-prompt = "Type somthing: "
+prompt = "Type something: "
 rMsg = "What you typed, reversed: "
 reverseIt' = putStr prompt
              >> getLine

@@ -52,8 +52,15 @@ concatAlternate :: [String] -> (String, String)
     concatAlternate xs = fold* ... xs  where
         ...
 
-  Above, "..." should be replaced by other code. "fold*" must be one of
-  the following: foldl, foldr, foldl1, foldr1.
+  Above, "..." needs to be replaced by other code. "fold*" must be one
+  of the following: foldl, foldr, foldl1, foldr1.
+
+  The code below will work, but it does not meet the above requirement.
+  So it would not be graded, if it were turned in.
 -}
-concatAlternate _ = ("Yo", "Yoyo")  -- DUMMY; REWRITE THIS!!!
+
+-- REWRITE THE FOLLOWING!!!
+concatAlternate [] = ("", "")
+concatAlternate (s:ss) = (s ++ b, a)  where
+    (a, b) = concatAlternate ss
 

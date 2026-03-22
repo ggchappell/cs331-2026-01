@@ -13,7 +13,7 @@
 (display "useful. See the source.\n")
 
 
-; ***** Quick Review / General *****
+; ***** From the Reading: Expressions, Defining *****
 
 
 ; Single-line comment begins with semicolon
@@ -90,10 +90,74 @@
 ;   (!= 1 3)
 ;   (!= (+ 1 2) 3)
 
+
+; ***** Simple Output *****
+
+
+; Print anything: display
+
+; Try:
+;   (display "Hello!")
+;   (display "Hello\nthere!")
+;   (display (+ 2 3))
+;   (display '(1 2 3))
+
+; Print a newline: newline
+
+; Try:
+;   (newline)
+
+; "begin" is given zero or more expressions. It evaluates each of them,
+; in order, and returns the last.
+
+; Try:
+;   (begin 2 5 7 11)
+;   (begin 2 (display "yo") 7 11)
+
+; Use "begin" to put together multiple output lines.
+
+(define (printStuff)
+  (begin
+    (display "Hello\n")
+    (display "there,\n")
+    (display "everyone!\n")
+    )
+  )
+
+; Try:
+;   (printStuff)
+
+
+; ***** Conditionals *****
+
+
 ; if-then-else: (if COND THEN-EXPR ELSE-EXPR)
 
 ; Try:
 ;   (if (= 3 3) "yes" "NO")
+
+; Every value is truthy except #f.
+
+; Try:
+;   (if 0 "yes" "NO")
+
+; Equivalent of if-elseif-elseif ... or Haskell guards: cond
+; Takes zero or nore 2-item lists, each containing a condition and an
+; expression. The conditions are evaluated in order. When the first
+; truthy condition is found, the corresponding expression is evaluated
+; and returned. Optionally, the last condition may be "else" -- like
+; Haskell "otherwise".
+
+(define (printSignString x)
+  (cond
+    [(= x 0)  (display "zero\n")]
+    [(> x 0)  (display "positive\n")]
+    [else     (display "negative\n")]
+    )
+  )
+
+; Try:
+;   (printSignString -4.5)
 
 
 ; ***** Lists *****

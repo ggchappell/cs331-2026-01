@@ -1,5 +1,5 @@
 #lang scheme
-; macro.scm  UNFINISHED
+; macro.scm
 ; Glenn G. Chappell
 ; 2026-03-30
 ;
@@ -16,13 +16,118 @@
 ; ***** Multiple-Pattern Macros *****
 
 
-; CODE COMING SOON
+; define-syntax-rule is a wrapper around define-syntax + syntax-rules.
+; The latter can take multiple patterns beginning with the same
+; identifier. The first pattern that matches is used.
+
+; Here is qlist, expanded version (renamed qlistx).
+
+; qlistx
+; Macro. Just like qlist from macro1.scm.
+(define-syntax qlistx
+  (syntax-rules ()
+    [(qlistx . args)
+     'args
+     ]
+    )
+  )
+
+; Try:
+;   (qlistx (+ 1 2) 7 (+ 2 3))
+
+; An example using multiple patterns.
+
+; def12
+; Macro. Define one or two identifiers.
+(define-syntax def12
+  (syntax-rules ()
+    [(def12 s1 e1)
+     (define s1 e1)
+     ]
+    [(def12 s1 e1 s2 e2)
+     (begin (define s1 e1) (define s2 e2))
+     ]
+    )
+  )
+
+; Try:
+;   (def12 x (+ 5 8))
+;   x
+
+; Try:
+;   (def12 a (+ 1 2) b (+ 2 3))
+;   a
+;   b
+
+; def-bunch
+; Macro. Define an arbitrary number of identifiers.
+(define-syntax def-bunch
+  (syntax-rules ()
+    [(def-bunch)               ; BASE CASE
+     (void)
+     ]
+    [(def-bunch s1 e1 . rest)  ; RECURSIVE CASE
+     (begin
+       (define s1 e1)
+       (def-bunch . rest)
+       )
+     ]
+    )
+  )
+
+; Try:
+;   (def-bunch a 1 b 2 c (+ 3 3))
+;   c
 
 
 ; ***** Keywords in Macros *****
 
 
-; CODE COMING SOON
+; The list after syntax-rules (which is always empty above) is the list
+; of *keywords*. These are words that only match themselves in a
+; pattern. The identifier being defined is always a keyword; the list
+; allows others to be specified.
+
+; for-each1
+; Macro. For-each loop. Iterates over given list. List to iterate over
+; is not evaluated.
+; Example usage:
+;   (for-each1 n in (2 4 10) (display n) (newline))
+(define-syntax for-each1
+  (syntax-rules (in)
+    [(for-each1 var in () . body)                  ; BASE CASE
+     (void)
+     ]
+    [(for-each1 var in (first-val . rest) . body)  ; RECURSIVE CASE
+     (begin
+       (let ([var first-val]) (begin . body))
+       (for-each1 var in rest . body)
+       )
+     ]
+    )
+  )
+
+; Try:
+;   (for-each1 i in (2 4 10) (display i) (newline))
+
+; for-each2
+; Macro. For-each loop. Iterates over given list. List to iterate over
+; is given as an expression, which is evaluated to obtain the list.
+; Example usage:
+;   (for-each2 n in '(2 4 10) (display n) (newline))
+;   (for-each2 i in (append '(2 4) '(10)) (display i) (newline))
+(define-syntax for-each2
+  (syntax-rules (in)
+    [(for-each2 var in list-expr . body)
+     (eval (append '(for-each1 var in) (list list-expr) 'body))
+     ]
+    )
+  )
+
+; Try:
+;   (for-each2 i in (append '(2 4) '(10)) (display i) (newline))
+;   (define values '(2 4 10))
+;   (for-each2 i in values (display i) (newline))
 
 
 ; ***** EXTRA: Symbolic Differentiation Macros *****

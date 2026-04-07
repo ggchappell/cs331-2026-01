@@ -5,7 +5,6 @@
 -- For CS 331 Spring 2026
 -- Interpret AST from parseit.parse
 -- Solution to Assignment 6, Exercise A
--- PRIVATE
 
 
 -- *** To run a Tamandua program, use tamandua.lua (calls this file).

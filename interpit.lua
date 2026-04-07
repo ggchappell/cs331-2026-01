@@ -261,6 +261,7 @@ function interpit.interp(ast, state, util)
         assert(#ast >= 1)
 
         if ast[1] == EMPTY_STMT then
+            assert(#ast == 1)
             return
         elseif ast[1] == PRINT_STMT or ast[1] == PRINTLN_STMT then
             for i = 2, #ast do

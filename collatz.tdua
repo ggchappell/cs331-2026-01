@@ -1,0 +1,65 @@
+#!./tamandua.lua6
+# collatz.tdua
+# Glenn G. Chappell
+# 2026-04-14
+#
+# For CS 331 Spring 2026
+# Tamandua Demo: Collatz Sequences
+
+
+# Function collatz
+# Given a positive integer k, applies the Collatz function once and
+# returns the result. k is not modified.
+func collatz() {
+    if (k % 2 == 0) {
+        return k/2;
+    } else {
+        return 3*k + 1;
+    }
+}
+
+
+# Function printCollatzSequence
+# Given a positive integer n, print the Collatz sequence beginning at n
+# and ending at 1, items separated by blanks and ending with a newline.
+# Modifies variable k.
+func printCollatzSequence() {
+    k = n;
+    while (k != 1) {
+        print(k, " ");
+        k = collatz();
+    }
+    println(k);
+}
+
+
+# Main Program
+# Repeatedly input a number and prints its Collatz sequence. End by
+# entering zero or a blank line.
+
+# Print header
+println("Tamandua - Collatz Sequences Demo");
+println();
+
+# Input & sequence printing
+done = 0;  # False
+while (!done) {
+    print("Type a positive integer (0 or blank line to end): ");
+    n = readint();
+    if (n <= 0) {
+        done = 1;  # True
+    } else {
+        println();
+        println("Collatz sequence for ", n, ":");
+        printCollatzSequence();
+        println();
+    }
+}
+
+
+# Wait for user
+# (unnecessary with tamandua.lua, so commented out)
+#println();
+#print("Press ENTER to quit ");
+#dummy = readint();
+

@@ -1,0 +1,18 @@
+#!./tamandua.lua
+# hello.tdua
+# Glenn G. Chappell
+# 2026-04-14
+#
+# For CS 331 Spring 2026
+# Hello-world in Tamandua
+
+
+println("Hello, world!");
+
+
+# Wait for user
+# (unnecessary with tamandua.lua, so commented out)
+#println();
+#print("Press ENTER to quit ");
+#dummy = readint();
+

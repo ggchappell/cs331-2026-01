@@ -1,0 +1,69 @@
+#!./tamandua.lua
+# check_tamandua.tdua
+# Glenn G. Chappell
+# 2026-04-14
+#
+# For CS 331 Spring 2026
+# A Tamandua Program to Run
+# Used in Assignment 7, Exercise A
+
+
+# initData - Initialize data arrays
+func initData() {
+    arrlen = 28;  # Length of arrays
+
+    a[0] =  192;   a[1] =  166;   a[2] =  291;
+    a[3] =  174;   a[4] =  861;   a[5] =  672;
+    a[6] =  256;   a[7] =  911;   a[8] =  193;
+    a[9] =  490;   a[10] = 499;   a[11] = 712;
+    a[12] = 706;   a[13] = 214;   a[14] = 654;
+    a[15] = 139;   a[16] = 781;   a[17] = 445;
+    a[18] = 616;   a[19] = 232;   a[20] = 789;
+    a[21] = 223;   a[22] = 860;   a[23] = 406;
+    a[24] = 357;   a[25] = 211;   a[26] = 100;
+    a[27] = 113;
+
+    b[0] =  449;   b[1] =  293;   b[2] =  443;
+    b[3] =  919;   b[4] =  207;   b[5] =  205;
+    b[6] =  514;   b[7] =  382;   b[8] =  246;
+    b[9] =  894;   b[10] = 351;   b[11] = 396;
+    b[12] = 926;   b[13] = 918;   b[14] = 429;
+    b[15] = 713;   b[16] = 174;   b[17] = 331;
+    b[18] = 639;   b[19] = 799;   b[20] = 751;
+    b[21] = 148;   b[22] = 732;   b[23] = 171;
+    b[24] = 429;   b[25] = 196;   b[26] = 100;
+    b[27] = 100;
+}
+
+
+# Main Program
+# Print a secret message -- somehow.
+
+# Initialize data
+initData();
+
+# Print header
+println("Secret message #5:");
+println();
+
+# Print the secret message (in a mysterious manner)
+aa = 5;
+bb = 9;
+ii = 0;
+while (ii < arrlen) {
+    cc = (aa + bb) % 23;
+    val = a[ii] - b[ii] + a[ii-1] + b[ii-1] + 2347 + cc;
+    print(chr(32 + val % 94));
+    aa = bb;
+    bb = cc;
+    ++ii;
+}
+println();
+
+
+# Wait for user
+# (unnecessary with tamandua.lua, so commented out)
+#println();
+#print("Press ENTER to quit ");
+#dummy = readint();
+
